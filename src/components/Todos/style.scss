@@ -1,0 +1,163 @@
+.todos {
+    .todos-header {
+        text-align: center;
+        background: #AF7EEB;
+        color: white;
+        font-size: 25px;
+        font-weight: bold;
+        padding: 30px;
+    }
+
+    .todos-body {
+        padding: 50px 100px;
+        margin: auto;
+        display: flex;
+        width: max-content;
+        flex-direction: column;
+
+        .form-container {
+            margin-bottom: 50px;
+
+            form {
+                width: 500px;
+                margin: auto;
+
+                input {
+                    border-radius: 5px;
+                    border: 1px solid #CCC;
+                    box-shadow: 8px 10px 13px #e9e9e9;
+                    padding: 10px;
+                    width: 100%;
+                    font-size: 20px;
+                    margin-bottom: 15px;
+                }
+
+                button {
+                    display: flex;
+                    margin: auto;
+                    font-size: 20px;
+                    border: none;
+                    background: #AF7EEB;
+                    color: white;
+                    border-radius: 5px;
+                    padding: 5px 30px;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+
+                .error {
+                    color: red;
+                }
+            }
+
+        }
+
+        .todos-list {
+            table {
+                display: block;
+                width: 100%;
+                padding: 0 10px;
+                border-collapse: separate;
+                border-spacing: 0px 5px;
+                overflow-y: scroll;
+                max-height: 400px;
+
+                thead {
+                    th {
+                        background: #AF7EEB;
+                        color: white;
+                        padding: 10px 15px;
+                        text-align: left;
+                        border: 1px solid #AF7EEB;
+                    }
+                }
+
+                tbody {
+                    tr.todo-bg {
+                        background: #efefef;
+                        ;
+
+                        td {
+                            border: 1px solid transparent;
+                        }
+                    }
+
+                    tr.progress-bg {
+                        background: #FFE380;
+
+                        td {
+                            border: 1px solid transparent;
+                        }
+                    }
+
+                    tr.done-bg {
+                        background: darkseagreen;
+                        text-decoration: line-through;
+
+                        td {
+                            border: 1px solid transparent;
+                        }
+                    }
+
+                    tr {
+                        td {
+                            padding: 10px 15px;
+                            word-wrap: break-word;
+                            max-width: 500px;
+                            vertical-align: top;
+
+                            select {
+                                padding: 5px 0px 5px 2px;
+                                //border: none;
+                                font-size: 14px;
+                            }
+
+                            button {
+                                background-color: red;
+                                padding: 7px 30px;
+                                border: none;
+                                color: white;
+
+                                &:hover {
+                                    cursor: pointer;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            table.no-data {
+                border-collapse: separate;
+                width: 100%;
+                display: table;
+
+                tr td {
+                    border: 1px solid black;
+                }
+            }
+            table{
+                &::-webkit-scrollbar {
+                    width: 5px;
+                  }
+                  
+                  /* Track */
+                  &::-webkit-scrollbar-track {
+                    background: #f1f1f1;
+                  }
+                  
+                  /* Handle */
+                  &::-webkit-scrollbar-thumb {
+                    background: #888;
+                  }
+                  
+                  /* Handle on hover */
+                  &::-webkit-scrollbar-thumb:hover {
+                    background: #555;
+                  }
+            }
+        }
+    }
+}
