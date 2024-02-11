@@ -1,30 +1,39 @@
 import { useState } from "react"
 import './style.scss'
+import TodoLists from "./TodoLists"
+import Form from "./Form"
 
 const initialState = {
   id: 0,
   note: "",
-  status: ""
+  status: "",
+  title: ""
 }
 const errorText = 'Enter task to add it in a list '
 const Todos = () => {
   const [todoValue, setTodoValue] = useState(initialState)
   const [todos, setTodos] = useState([]);
   const [error, setError] = useState(false);
+  const [statusFilterVal, setStatusFilterVal] = useState('all')
+
+
+  const [showCreateForm, setShowCreateForm] = useState(false);
+
   const handleChange = (event) => {
     setTodoValue((todoValue) => ({
       ...todoValue, id: Date.now(),
-      note: event.target.value,
+      [event.target.name]: event.target.value,
       status: 'todo'
     }))
   }
   const addTodo = (event) => {
     event.preventDefault();
-    if (todoValue.note !== "") {
+    if (todoValue.note !== "" && todoValue.title !== "") {
       setTodos((todos) => [...todos, todoValue])
       setTodoValue(initialState)
       console.log(event.target)
       setError(false)
+      setShowCreateForm(false)
     } else {
       setError(true)
     }
@@ -61,75 +70,50 @@ const Todos = () => {
     setTodos((todos) => todos.filter((todo) => todo.id !== id))
   }
 
-  const setRowStyle = (status) => {
-    switch(status){
-      case "todo":
-        return "todo-bg"
-      case "inprogress":
-        return "progress-bg"
-      case "done":
-        return "done-bg" 
-      default: 
-      return ""
-    }
+  const handleStatusFilter = (e) => {
+    setStatusFilterVal(e.target.value)
   }
+
+  const filteredList = statusFilterVal === 'all' ? todos : todos.filter((todo) => todo.status === statusFilterVal)
+
+  const handleCreate = (e) => {
+    e.preventDefault();
+    setShowCreateForm(true);
+  }
+
+  const handleClose = () => {
+    setShowCreateForm(false); setError(false); setTodoValue(initialState)
+  }
+
   return (
     <div className="todos">
-      <div className="todos-header">
-        TODO APP
-      </div>
-      <div className="todos-body">
-        <div className="form-container">
-          <form onSubmit={addTodo}>
-            <div>
-              <input
-                type="text"
-                name="todo"
-                placeholder="Type task..."
-                id="todo"
-                value={todoValue.note}
-                onChange={handleChange} />
-            </div>
-            <button>Add</button>
-            {error && <p className="error">{errorText}</p>}
-          </form>
+      <div className="fluid-container">
+        <div className="todos-header">
+          Task Manager
         </div>
-        <div className="todos-list">
-          <table className={todos.length === 0 ? "no-data" : ""}>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Task</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
 
-            <tbody>
-              {todos.length > 0 ? todos.map((todo) => {
-                return (
-                  <tr key={todo.id} className={setRowStyle(todo.status)}>
-                    <td>{displayDate(todo.id)}</td>
-                    <td>{todo.note}</td>
-                    <td>
-                      <select value={todo.status} onChange={(event) => handleStatus(event, todo.id)}>
-                        <option value={'todo'}>Todo</option>
-                        <option value={'inprogress'}>In-Progress</option>
-                        <option value={'done'}>Done</option>
-                      </select>
-                    </td>
-                    <td>
-                      <button onClick={(event) => deleteTask(event, todo.id)}>Delete</button>
-                    </td>
-                  </tr>
-                )
-              }) : <tr><td colSpan={4} className="text-center">No data</td></tr>}
-            </tbody>
+        <div className={`d-flex px-3 justify-content-between`}>
 
-          </table>
+          <div className="todo-options mt-3 mb-3">
+            <select className="form-select form-select-md w-auto" name="statusFilter" id="statusFilter" value={statusFilterVal} onChange={handleStatusFilter}>
+              <option value={'all'}>All</option>
+              <option value={'todo'}>Todo</option>
+              <option value={'inprogress'}>In Progress</option>
+              <option value={'done'}>Done</option>
+            </select>
+          </div>
+
+          <button className="my-3 btn btn-primary" onClick={handleCreate}>+ Add task</button>
+
+        </div>
+
+        <div className="row px-3">
+          <TodoLists filteredList={filteredList} displayDate={displayDate} deleteTask={deleteTask} handleStatus={handleStatus} />
         </div>
       </div>
 
+
+      <Form addTodo={addTodo} showCreateForm={showCreateForm} error={error} todoValue={todoValue} handleChange={handleChange} errorText={errorText} handleClose={handleClose} />
 
     </div>
   )
