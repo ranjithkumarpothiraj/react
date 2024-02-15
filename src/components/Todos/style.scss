@@ -1,4 +1,11 @@
 .todos {
+    position: relative;
+    height: 100vh;
+    .blur{
+        filter: blur(3px);
+        cursor:not-allowed;
+        pointer-events: none;
+    }
     .todos-header {
         text-align: center;
         background: #AF7EEB;
@@ -166,6 +173,10 @@
             }
         }
     }
+}
+
+.overflow-hidden{
+    overflow: hidden ;
 }
 
 a:hover{

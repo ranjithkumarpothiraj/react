@@ -1,7 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import './style.scss'
 import TodoLists from "./TodoLists"
 import Form from "./Form"
+import TodoDetails from "./TodoDetails"
 
 const initialState = {
   id: 0,
@@ -9,6 +10,9 @@ const initialState = {
   status: "",
   title: ""
 }
+
+const scrollOptions = { behavior: "smooth" }
+
 const errorText = 'Enter task to add it in a list '
 const Todos = () => {
   const [todoValue, setTodoValue] = useState(initialState)
@@ -18,6 +22,12 @@ const Todos = () => {
 
 
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [detailsPanel, setDetailsPanel] = useState(false);
+  const [todoDetail, setTodoDetail] = useState({});
+
+  useEffect(() => {
+    detailsPanel && document.getElementById('todoDetails').scrollIntoView()
+  }, [detailsPanel])
 
   const handleChange = (event) => {
     setTodoValue((todoValue) => ({
@@ -45,7 +55,13 @@ const Todos = () => {
     }
     setTodos((todos) => {
       return todos.map((todo) => {
-        return (todo.id === id ? { ...todo, ...updatedData } : todo)
+        if (todo.id === id) {
+          detailsPanel && setTodoDetail({ ...todo, ...updatedData })
+          return { ...todo, ...updatedData }
+        } else {
+          return todo
+        }
+        // return (todo.id === id ? { ...todo, ...updatedData } : todo)
       })
     })
   }
@@ -85,9 +101,22 @@ const Todos = () => {
     setShowCreateForm(false); setError(false); setTodoValue(initialState)
   }
 
+  const handleDetailsPanel = (data) => {
+    setDetailsPanel(true);
+    setTodoDetail(data);
+  }
+
+  const handleCloseDetail = (id) => {
+    setTimeout(() => {
+      setDetailsPanel(false);
+      setTodoDetail({});
+      id && document.getElementById(id).scrollIntoView(scrollOptions);
+    }, 300)
+  }
+
   return (
-    <div className="todos">
-      <div className="fluid-container">
+    <div className={`todos ${detailsPanel ? 'overflow-hidden' : ''}`}>
+      <div className={`fluid-container ${detailsPanel ? 'blur' : ''}`}>
         <div className="todos-header">
           Task Manager
         </div>
@@ -108,13 +137,13 @@ const Todos = () => {
         </div>
 
         <div className="row px-3">
-          <TodoLists filteredList={filteredList} displayDate={displayDate} deleteTask={deleteTask} handleStatus={handleStatus} />
+          <TodoLists filteredList={filteredList} displayDate={displayDate} deleteTask={deleteTask} handleStatus={handleStatus} onClick={handleDetailsPanel} />
         </div>
       </div>
 
 
       <Form addTodo={addTodo} showCreateForm={showCreateForm} error={error} todoValue={todoValue} handleChange={handleChange} errorText={errorText} handleClose={handleClose} />
-
+      {detailsPanel && <TodoDetails todoDetail={todoDetail} handleCloseDetail={handleCloseDetail} handleStatus={handleStatus} />}
     </div>
   )
 }
